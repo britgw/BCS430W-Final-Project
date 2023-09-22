@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 // Log goes to Logcat (look at the bottom of this window
                 Log.d("LOGIN", "Username: " + username.getText().toString());
                 Log.d("LOGIN", "Password: " + password.getText().toString());
+                startActivity(new Intent(getApplicationContext(), MovieList.class));
                 // Check login information
                 if(username.getText().toString() == "admin" || password.getText().toString() == "admin") {
                     startActivity(new Intent(getApplicationContext(), MovieList.class));

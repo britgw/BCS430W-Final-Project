@@ -9,21 +9,23 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class SQLConnect {
-    Connection con;
+    static Connection con;
     String user, pw, ip, port, db;
 
+    // Connects to the SQL Server
     public Connection getCon() {
+        // TODO: get actual values and an SQL server
         ip = "192.168.1.60";
         db = "BCS430W";
         user = "admin";
         pw = "password";
         port = "1433";
 
+        // Connect to SQL server
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Connection connection = null;
         String connectionUrl = null;
-
         try{
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
             connectionUrl = "jdbc:jtds:sqlserver://"+ip+":"+port+";databasename="+db+";user="+user+";password"+pw+";";
@@ -31,11 +33,12 @@ public class SQLConnect {
         }catch (Exception e){
             Log.e("SQL", e.getMessage());
         }
-
+        con = connection;
         return connection;
     }
 
-    public ResultSet getResultsFromSQL(String query){
+    // Query SQL server
+    public static ResultSet getResultsFromSQL(String query){
         String result = "";
         try{
             SQLConnect connectionClass = new SQLConnect();
