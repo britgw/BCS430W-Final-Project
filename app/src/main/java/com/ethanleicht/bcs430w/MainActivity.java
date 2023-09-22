@@ -1,8 +1,8 @@
 package com.ethanleicht.bcs430w;
 
-import androidx.annotation.MainThread;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,7 +10,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Connection;
+
 public class MainActivity extends AppCompatActivity {
+    Connection connect;
+    String cResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("LOGIN", "Username: " + username.getText().toString());
                 Log.d("LOGIN", "Password: " + password.getText().toString());
                 // Check login information
-                Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_LONG).show();
+                if(username.getText().toString() == "admin" || password.getText().toString() == "admin") {
+                    startActivity(new Intent(getApplicationContext(), MovieList.class));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
