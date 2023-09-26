@@ -19,9 +19,10 @@ public class MovieList extends AppCompatActivity {
 
         try {
             // TODO: make this actually search
-            ResultSet movies = SQLConnect.getResultsFromSQL("SELECT * FROM MOVIES");
+            ResultSet movies = SQLConnect.getResultsFromSQL("SELECT * FROM MOVIES;");
             // TODO: list all movies
-            list.setText(movies.getString(1));
+            if(movies != null)
+                list.setText(movies.getString(1));
         }catch (Exception e){
             Log.e("SQL", e.getMessage());
         }

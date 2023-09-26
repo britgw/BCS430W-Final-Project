@@ -10,17 +10,9 @@ import java.sql.Statement;
 
 public class SQLConnect {
     static Connection con;
-    String user, pw, ip, port, db;
 
     // Connects to the SQL Server
     public Connection getCon() {
-        // TODO: get actual values and an SQL server
-        ip = "192.168.1.60";
-        db = "BCS430W";
-        user = "admin";
-        pw = "password";
-        port = "1433";
-
         // Connect to SQL server
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -28,12 +20,13 @@ public class SQLConnect {
         String connectionUrl = null;
         try{
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            connectionUrl = "jdbc:jtds:sqlserver://"+ip+":"+port+";databasename="+db+";user="+user+";password"+pw+";";
-            connection = DriverManager.getConnection(connectionUrl);
+            // TODO: Fix this. The application stops responding when it tries to get a connection.
+            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://70.107.82.4:3306/test", "root", "shelly");
         }catch (Exception e){
             Log.e("SQL", e.getMessage());
+            Log.e("SQL", "Unable to connect");
         }
-        con = connection;
+        //con = connection;
         return connection;
     }
 
@@ -47,6 +40,8 @@ public class SQLConnect {
                 // String query = "SELECT * FROM MOVIES";
                 Statement st = con.createStatement();
                 return st.executeQuery(query);
+            } else {
+                Log.e("SQL", "No connection");
             }
         }catch (Exception e){
             Log.e("SQL", e.getMessage());
