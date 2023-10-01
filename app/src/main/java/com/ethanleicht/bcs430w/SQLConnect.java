@@ -21,7 +21,7 @@ public class SQLConnect {
         try{
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
             // TODO: Fix this. The application stops responding when it tries to get a connection.
-            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://70.107.82.4:3306/test", "root", "shelly");
+            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://70.107.82.4:33062/test", "root", "shelly");
         }catch (Exception e){
             Log.e("SQL", e.getMessage());
             Log.e("SQL", "Unable to connect");

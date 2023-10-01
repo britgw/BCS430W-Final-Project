@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/usernameLabel"
+        style="@style/Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username:"
@@ -16,6 +17,7 @@
 
     <EditText
         android:id="@+id/usernameInput"
+        style="@style/Label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -26,6 +28,7 @@
 
     <TextView
         android:id="@+id/passwordLabel"
+        style="@style/Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Password:"
@@ -34,6 +37,7 @@
 
     <EditText
         android:id="@+id/passwordInput"
+        style="@style/Label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -44,6 +48,7 @@
 
     <Button
         android:id="@+id/loginButton"
+        style="@style/Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
