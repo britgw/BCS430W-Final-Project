@@ -34,13 +34,14 @@ public class SQLConnect {
             con = connectionClass.getCon(username, password);
             if(con != null){
                 Statement st = con.createStatement();
-                ResultSet statement = st.executeQuery(query);
-                return statement;
+                ResultSet resultSet = st.executeQuery(query);
+                return resultSet;
             } else {
                 Log.e("SQL", "No connection");
             }
         }catch (Exception e){
             Log.e("SQL", e.toString());
+            Log.e("SQL", e.getMessage());
         }
         return null;
     }

@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.ethanleicht.bcs430w"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.ethanleicht.bcs430w"
-        minSdk = 34
-        targetSdk = 34
+        minSdk = 26
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
