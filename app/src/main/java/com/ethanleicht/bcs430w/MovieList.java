@@ -2,6 +2,7 @@ package com.ethanleicht.bcs430w;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -18,8 +19,10 @@ public class MovieList extends AppCompatActivity {
         TextView list = findViewById(R.id.list);
 
         try {
-            // TODO: make this actually search
-            ResultSet movies = SQLConnect.getResultsFromSQL("SELECT * FROM MOVIES;");
+            Intent login = getIntent();
+            String username = login.getStringExtra("username");
+            String password = login.getStringExtra("password");
+            ResultSet movies = SQLConnect.getResultsFromSQL("SELECT * FROM MOVIES;", username, password);
             // TODO: list all movies
             if(movies != null)
                 list.setText(movies.getString(1));

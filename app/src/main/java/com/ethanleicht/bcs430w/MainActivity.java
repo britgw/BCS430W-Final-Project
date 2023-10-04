@@ -26,8 +26,11 @@ public class MainActivity extends AppCompatActivity {
             Log.d("LOGIN", "Username: " + username.getText().toString());
             Log.d("LOGIN", "Password: " + password.getText().toString());
             // Check login information
-            if(username.getText().toString().equals("") && password.getText().toString().equals("")) {
-                startActivity(new Intent(getApplicationContext(), MovieList.class));
+            if(!username.getText().toString().equals("") && !password.getText().toString().equals("")) {
+                Intent movieList = new Intent(getApplicationContext(), MovieList.class);
+                movieList.putExtra("username", username.getText().toString());
+                movieList.putExtra("password", password.getText().toString());
+                startActivity(movieList);
             } else {
                 Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_LONG).show();
             }
