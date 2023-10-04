@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.ethanleicht.bcs430w"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.ethanleicht.bcs430w"
-        minSdk = 26
-        targetSdk = 33
+        minSdk = 34
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -39,5 +39,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("net.sourceforge.jtds:jtds:1.3.1")
+    // JDBC Implementations
+    implementation("jboss:jboss-common-jdbc-wrapper:3.2.3")
+    implementation("mysql:mysql-connector-java:5.1.44")
 }

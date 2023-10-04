@@ -17,16 +17,12 @@ public class SQLConnect {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Connection connection = null;
-        String connectionUrl = null;
         try{
-            Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            // TODO: Fix this. The application can't connect to the server.
-            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://70.107.82.4:3306/test", "root", "shelly");
+            connection = DriverManager.getConnection("jdbc:mysql://70.107.82.4:3306/test?useSSL=false", username, password);
         }catch (Exception e){
-            Log.e("SQL", e.getMessage());
+            Log.e("SQL", e.toString());
             Log.e("SQL", "Unable to connect");
         }
-        //con = connection;
         return connection;
     }
 
@@ -37,15 +33,23 @@ public class SQLConnect {
             SQLConnect connectionClass = new SQLConnect();
             con = connectionClass.getCon(username, password);
             if(con != null){
-                // String query = "SELECT * FROM MOVIES";
                 Statement st = con.createStatement();
-                return st.executeQuery(query);
+                ResultSet statement = st.executeQuery(query);
+                return statement;
             } else {
                 Log.e("SQL", "No connection");
             }
         }catch (Exception e){
-            Log.e("SQL", e.getMessage());
+            Log.e("SQL", e.toString());
         }
         return null;
     }
+    public static void closeConnection(){
+        try{
+            con.close();
+        }catch (Exception e){
+            Log.e("SQL", e.toString());
+        }
+    }
+
 }

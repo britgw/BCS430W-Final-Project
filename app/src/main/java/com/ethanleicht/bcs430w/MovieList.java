@@ -26,6 +26,7 @@ public class MovieList extends AppCompatActivity {
             // TODO: list all movies
             if(movies != null)
                 list.setText(movies.getString(1));
+            SQLConnect.closeConnection();
         }catch (Exception e){
             Log.e("SQL", e.getMessage());
         }
