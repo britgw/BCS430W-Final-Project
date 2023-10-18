@@ -6,33 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".MovieList">
 
-    <EditText
-        android:id="@+id/searchBar"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/movieListToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Name"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/searchIcon"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBar" />
-
-    <ImageView
-        android:id="@+id/searchIcon"
-        android:layout_width="48dp"
-        android:layout_height="45dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_search" />
 
     <WebView
         android:id="@+id/webView"
@@ -41,5 +24,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list" />
+        app:layout_constraintTop_toBottomOf="@+id/movieListToolbar">
+
+    </WebView>
 </androidx.constraintlayout.widget.ConstraintLayout>

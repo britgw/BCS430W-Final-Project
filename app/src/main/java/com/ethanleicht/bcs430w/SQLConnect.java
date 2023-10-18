@@ -18,7 +18,7 @@ public class SQLConnect {
         StrictMode.setThreadPolicy(policy);
         Connection connection = null;
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://70.107.82.4:3306/test?useSSL=false", username, password);
+            connection = DriverManager.getConnection("jdbc:mysql://70.107.82.4:3306/rustdb?useSSL=false", username, password);
         }catch (Exception e){
             Log.e("SQL", e.toString());
             Log.e("SQL", "Unable to connect");

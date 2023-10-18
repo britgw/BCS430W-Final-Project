@@ -1,10 +1,15 @@
 package com.ethanleicht.bcs430w;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,40 +24,39 @@ public class MovieList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        TextView list = findViewById(R.id.list);
-        try {
-            Intent login = getIntent();
-            String username = login.getStringExtra("username");
-            String password = login.getStringExtra("password");
-            ResultSet movies = SQLConnect.getResultsFromSQL("SELECT * FROM MOVIES;", username, password);
-            // TODO: list all movies
-            if(movies != null) {
-                movies.first();
-                String titles = movies.getString(2);
-                while(movies.next()){
-                    titles += "\n" + movies.getString(2);
-                }
-                list.setText(titles);
-            } else {
-                list.setText("ERROR");
-            }
-            list.setText("");
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.movieListToolbar);
+        myToolbar.setTitle("Movie List");
+        setSupportActionBar(myToolbar);
 
-            // Setup webview
-            WebView webView = findViewById(R.id.webView);
-            // Stop redirecting to chrome
-            webView.setWebViewClient(new WebViewClient(){
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url){
-                    view.loadUrl(url);
-                    return false;
-                }
-            });
-            // go to our website
-            webView.loadUrl("http://70.107.82.4/BCS430w/Home.html");
-            SQLConnect.closeConnection();
-        }catch (Exception e){
-            Log.e("SQL", e.getMessage());
+        // Setup webview
+        WebView webView = findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        // Stop redirecting to chrome
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url){
+                view.loadUrl(url);
+                return false;
+            }
+        });
+        // go to our website
+        webView.loadUrl("http://70.107.82.4/BCS430w/Home.html");
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.movie_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection.
+        if(item.getItemId() == R.id.movieSearch) {
+            Intent movieList = new Intent(getApplicationContext(), SearchMovies.class);
+            startActivity(movieList);
+            return true;
+        }else{
+            return super.onOptionsItemSelected(item);
         }
     }
 }
