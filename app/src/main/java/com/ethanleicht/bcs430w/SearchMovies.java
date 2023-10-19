@@ -32,8 +32,13 @@ public class SearchMovies extends AppCompatActivity {
         TextView list = findViewById(R.id.list);
         TextView searchBar = findViewById(R.id.searchBar);
         RecyclerView searchResults = findViewById(R.id.searchResults);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        searchResults.setLayoutManager(llm);
+        MovieAdapter movieAdapter = new MovieAdapter(new ArrayList<Movie>());
+        searchResults.setAdapter(movieAdapter);
 
         list.setText("");
+        searchBar.setText("");
 
         searchBar.setOnKeyListener((l, k, j) -> {
             if(searchBar.getText().toString() == ""){
@@ -54,13 +59,13 @@ public class SearchMovies extends AppCompatActivity {
                     String desc = movie.getString("overview");
                     String img_url = IMG_URL + movie.getString("backdrop_path");
                     Movie m = new Movie(title, desc, img_url);
+                    movieResults.add(m);
                     // output title
                     output += movie.getString("title") + "\n";
                 }
-                searchResults.setLayoutManager(new LinearLayoutManager(this));
-                MovieAdapter movieAdapter = new MovieAdapter(movieResults.toArray(new Movie[movieResults.size()]));
+                movieAdapter.setData(movieResults);
                 searchResults.setAdapter(movieAdapter);
-                list.setText(output);
+                //list.setText(output);
             }catch(Exception e){
                 Log.e("MOVIEDB", e.toString());
             }
