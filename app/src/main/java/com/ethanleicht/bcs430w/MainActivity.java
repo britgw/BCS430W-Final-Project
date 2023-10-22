@@ -38,8 +38,9 @@ public class MainActivity extends AppCompatActivity {
                     ResultSet result = SQLConnect.getResultsFromSQL(query);
                     if(result != null && result.first()){
                         // Go to MovieList page
+                        int user = result.getInt("userid");
                         Intent movieList = new Intent(getApplicationContext(), MovieList.class);
-                        movieList.putExtra("userID", result.getInt("userid"));
+                        movieList.putExtra("userid", (int) result.getInt("userid"));
                         startActivity(movieList);
                     }else{
                         Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_LONG).show();

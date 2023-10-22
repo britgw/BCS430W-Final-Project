@@ -53,7 +53,15 @@ public class MovieList extends AppCompatActivity {
         // Handle item selection.
         if(item.getItemId() == R.id.movieSearch) {
             Intent movieList = new Intent(getApplicationContext(), SearchMovies.class);
+            int user = getIntent().getIntExtra("userid", 0);
+            movieList.putExtra("userid", user);
             startActivity(movieList);
+            return true;
+        }else if(item.getItemId() == R.id.profile) {
+            Intent profile = new Intent(getApplicationContext(), AccountView.class);
+            int user = getIntent().getIntExtra("userid", 0);
+            profile.putExtra("userid", user);
+            startActivity(profile);
             return true;
         }else{
             return super.onOptionsItemSelected(item);

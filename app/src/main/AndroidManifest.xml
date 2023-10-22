@@ -17,6 +17,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".AccountView"
+            android:exported="false" />
+        <activity
+            android:name=".FriendList"
+            android:exported="false" />
+        <activity
             android:name=".SearchMovies"
             android:exported="false" />
         <activity

@@ -9,4 +9,7 @@
         android:icon="@android:drawable/ic_menu_search"
         android:title="Search Movies"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/profile"
+        android:title="My Profile" />
 </menu>
