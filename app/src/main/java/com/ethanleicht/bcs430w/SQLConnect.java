@@ -12,13 +12,14 @@ public class SQLConnect {
     static Connection con;
 
     // Connects to the SQL Server
-    public Connection getCon(String username, String password) {
+    public Connection getCon() {
         // Connect to SQL server
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Connection connection = null;
+
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://70.107.82.4:3306/rustdb?useSSL=false", username, password);
+            connection = DriverManager.getConnection("jdbc:mysql://70.107.82.4:3306/rustdb?useSSL=false", "Guest", "");
         }catch (Exception e){
             Log.e("SQL", e.toString());
             Log.e("SQL", "Unable to connect");
@@ -27,11 +28,11 @@ public class SQLConnect {
     }
 
     // Query SQL server
-    public static ResultSet getResultsFromSQL(String query, String username, String password){
+    public static ResultSet getResultsFromSQL(String query){
         String result = "";
         try{
             SQLConnect connectionClass = new SQLConnect();
-            con = connectionClass.getCon(username, password);
+            con = connectionClass.getCon();
             if(con != null){
                 Statement st = con.createStatement();
                 ResultSet resultSet = st.executeQuery(query);

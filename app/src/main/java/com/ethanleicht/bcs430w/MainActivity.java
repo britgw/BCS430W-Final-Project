@@ -34,18 +34,16 @@ public class MainActivity extends AppCompatActivity {
             if(!username.getText().toString().equals("") && !password.getText().toString().equals("") || true) {
                 try{
                     // Validate username and password
-                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                    StrictMode.setThreadPolicy(policy);
-                    /*Connection connection = DriverManager.getConnection("jdbc:mysql://70.107.82.4:3306/test?useSSL=false", "Guest", "");
-                    String query = "SELECT * FROM users WHERE username=="+username.getText().toString()+" && password=="+password.getText().toString();
-                    ResultSet result = SQLConnect.getResultsFromSQL(query, "Guest", "");
-                    if(result.first() || true){*/
+                    String query = "SELECT * FROM users WHERE username = '"+username.getText().toString()+"' AND userid = "+password.getText().toString();
+                    ResultSet result = SQLConnect.getResultsFromSQL(query);
+                    if(result != null && result.first()){
                         // Go to MovieList page
                         Intent movieList = new Intent(getApplicationContext(), MovieList.class);
-                        movieList.putExtra("username", username.getText().toString());
-                        movieList.putExtra("password", password.getText().toString());
+                        movieList.putExtra("userID", result.getInt("userid"));
                         startActivity(movieList);
-                    //}
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_LONG).show();
+                    }
                 }catch (Exception e){
                     Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_LONG).show();
                     Log.e("SQL", e.toString());
