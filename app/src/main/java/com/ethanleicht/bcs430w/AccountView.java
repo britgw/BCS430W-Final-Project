@@ -25,6 +25,7 @@ public class AccountView extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         TextView usernameView = findViewById(R.id.pfUsername);
+        TextView bioView = findViewById(R.id.pfBio);
 
         int user = getIntent().getIntExtra("userid", 0);
 
@@ -34,6 +35,9 @@ public class AccountView extends AppCompatActivity {
             ResultSet result = SQLConnect.getResultsFromSQL(query);
             if(result.first()) {
                 usernameView.setText(result.getString("username"));
+                bioView.setText(result.getString("bio"));
+                // TODO: Add image for profile page from blob
+                SQLConnect.closeConnection();
             }
         }catch (Exception e){
             Log.e("MOVIEDB", "Invalid user");

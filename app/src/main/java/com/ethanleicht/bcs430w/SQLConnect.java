@@ -29,7 +29,6 @@ public class SQLConnect {
 
     // Query SQL server
     public static ResultSet getResultsFromSQL(String query){
-        String result = "";
         try{
             SQLConnect connectionClass = new SQLConnect();
             con = connectionClass.getCon();

@@ -34,14 +34,17 @@ public class FriendList extends AppCompatActivity {
                     "JOIN users AS friend ON friend.userid = fs.user2 " +
                     "WHERE u.userid = " + user;
             ResultSet result = SQLConnect.getResultsFromSQL(query);
-            int fetchSize = result.getFetchSize();
-            result.first();
-            fetchSize = result.getFetchSize();
-            for (int i = 0;i<result.getFetchSize()+1;i++){
-                usernames.add(result.getString(0));
-                pfps.add(result.getBlob(1).toString());
-                result.next();
+            if(result.first()) {
+                usernames.add(result.getString("friend"));
+                // TODO: Add friend profile pictures from blob
+                if(result.getBlob("pic") != null)
+                    pfps.add(result.getBlob("pic").toString());
+                while (result.next()) {
+                    usernames.add(result.getString(1));
+                    //pfps.add(result.getBlob(2).toString());
+                }
             }
+            SQLConnect.closeConnection();
             userAdapter.setData(usernames, pfps);
             friendList.setAdapter(userAdapter);
 

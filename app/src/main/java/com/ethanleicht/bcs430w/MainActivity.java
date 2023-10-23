@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             // Check login information
             if(!username.getText().toString().equals("") && !password.getText().toString().equals("") || true) {
                 try{
-                    // Validate username and password
+                    // Validate username and password   TODO: Decrypt passwords
                     String query = "SELECT * FROM users WHERE username = '"+username.getText().toString()+"' AND userid = "+password.getText().toString();
                     ResultSet result = SQLConnect.getResultsFromSQL(query);
                     if(result != null && result.first()){
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
                         int user = result.getInt("userid");
                         Intent movieList = new Intent(getApplicationContext(), MovieList.class);
                         movieList.putExtra("userid", (int) result.getInt("userid"));
+                        SQLConnect.closeConnection();
                         startActivity(movieList);
                     }else{
                         Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_LONG).show();
