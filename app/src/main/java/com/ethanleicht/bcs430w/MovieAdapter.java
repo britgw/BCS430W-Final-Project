@@ -17,6 +17,17 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     private List<Movie> movieSet;
 
+    private static MovieAdapterListener listener;
+
+    void setOnItemClickListener(MovieAdapterListener _listener)
+    {
+        listener = _listener;
+    }
+
+    interface MovieAdapterListener {
+        void onClick(int position);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private TextView desc;
@@ -24,6 +35,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         public ViewHolder(View view) {
             super(view);
+
+            view.setOnClickListener( v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onClick(position);
+                }
+            });
+
             title = (TextView) view.findViewById(R.id.titleView);
             desc = (TextView) view.findViewById(R.id.descView);
             img = (ImageView) view.findViewById(R.id.imageView);
@@ -41,17 +60,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public ImageView getImage() {
             return img;
         }
-    }
 
-    private NameAdapterListener listener;
 
-    void setOnItemClickListener(NameAdapterListener _listener)
-    {
-        listener = _listener;
-    }
-
-    interface NameAdapterListener {
-        void onClick(int position);
     }
 
     public MovieAdapter(List<Movie> dataSet) {

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class FriendList extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +38,16 @@ public class FriendList extends AppCompatActivity {
             if(result.first()) {
                 usernames.add(result.getString("friend"));
                 // TODO: Add friend profile pictures from blob
-                if(result.getBlob("pic") != null)
-                    pfps.add(result.getBlob("pic").toString());
+                if(result.getBlob("pic") != null) {
+                    String imageUrl = "http://108.14.0.126/BCS430w/" + result.getString("userid") + ".png";
+                    pfps.add(imageUrl);
+                }
                 while (result.next()) {
                     usernames.add(result.getString(1));
-                    //pfps.add(result.getBlob(2).toString());
+                    if(result.getBlob("pic") != null) {
+                        String imageUrl = "http://108.14.0.126/BCS430w/" + result.getString("userid") + ".png";
+                        pfps.add(imageUrl);
+                    }
                 }
             }
             SQLConnect.closeConnection();

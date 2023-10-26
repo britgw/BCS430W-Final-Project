@@ -1,5 +1,10 @@
 package com.ethanleicht.bcs430w;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.WindowManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,19 +12,29 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Movie {
+
+    private static final String API_KEY = "api_key=0470883e66467443d1d8ad73e3c4a2ed";
+    private static final String BASE_URL = "https://api.themoviedb.org/3";
+
+    private String id;
     private String title;
     private String desc;
     private String img_url;
-    public Movie(String title, String desc, String img_url){
+    public Movie(String id, String title, String desc, String img_url){
+        this.setId(id);
         this.setTitle(title);
         this.setDesc(desc);
         this.setImg(img_url);
     }
 
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getTitle() {
         return title;
     }
@@ -42,6 +57,23 @@ public class Movie {
 
     public void setImg(String img_url) {
         this.img_url = img_url;
+    }
+
+    //public String getTrailer(){ return BASE_URL + "/movie/" + id + "/videos?" + API_KEY;  }
+
+    public static String getTrailer(String movieId, int width, int height){
+        String json = "https://api.themoviedb.org/3/movie/"+movieId+"/videos?" + API_KEY;
+
+        try {
+            JSONObject movies = Movie.readJsonFromUrl(json);
+            String key = movies.getJSONArray("results").getJSONObject(1).getString("key");
+            String frameVideo = "<html><body><iframe width=\""+width+"\" height=\""+height+"\" src=\"https://www.youtube.com/embed/"+key+"\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
+            //String frameVideo = "https://www.youtube.com/video/"+key;
+            return frameVideo;
+        }catch (Exception e){
+            Log.e("MOVIEDB", e.toString());
+        }
+        return null;
     }
 
     private static String readAll(Reader rd) throws IOException {

@@ -1,5 +1,7 @@
 package com.ethanleicht.bcs430w;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
@@ -65,9 +68,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         viewHolder.getUsername().setText(usernames.get(position));
         try {
-            InputStream is = (InputStream) new URL(pfps.get(position)).getContent();
-            Drawable d = Drawable.createFromStream(is, pfps.get(position));
-            viewHolder.getPfp().setImageDrawable(d);
+            URL urlConnection = new URL(pfps.get(position));
+            HttpURLConnection connection = (HttpURLConnection) urlConnection
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bmp = BitmapFactory.decodeStream(input);
+            viewHolder.getPfp().setImageBitmap(bmp);
         }catch (Exception e){
             Log.e("MOVIEDB", "INVALID IMAGE");
             Log.e("MOVIEDB", e.toString());

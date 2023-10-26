@@ -4,16 +4,52 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.sql.Blob;
 import java.sql.ResultSet;
 
 public class AccountView extends AppCompatActivity {
+    public Bitmap getProfilePicture(int userid){
+        try{
+            URL urlConnection = new URL("http://108.14.0.126/BCS430w/"+userid+".png");
+            HttpURLConnection connection = (HttpURLConnection) urlConnection
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bmp = BitmapFactory.decodeStream(input);
+            return bmp;
+        }catch (Exception e){
+            try{
+                URL urlConnection = new URL("http://108.14.0.126/BCS430w/"+userid+".jpg");
+                HttpURLConnection connection = (HttpURLConnection) urlConnection
+                        .openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap bmp = BitmapFactory.decodeStream(input);
+                return bmp;
+            }catch (Exception ex){
+                Log.e("MOVIEDB", "No Image");
+                Log.e("MOVIEDB", e.toString());
+                Log.e("MOVIEDB", ex.toString());
+                return null;
+            }
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +62,7 @@ public class AccountView extends AppCompatActivity {
 
         TextView usernameView = findViewById(R.id.pfUsername);
         TextView bioView = findViewById(R.id.pfBio);
+        ImageView pfp = findViewById(R.id.pfPicture);
 
         int user = getIntent().getIntExtra("userid", 0);
 
@@ -36,7 +73,7 @@ public class AccountView extends AppCompatActivity {
             if(result.first()) {
                 usernameView.setText(result.getString("username"));
                 bioView.setText(result.getString("bio"));
-                // TODO: Add image for profile page from blob
+                pfp.setImageBitmap(getProfilePicture(user));
                 SQLConnect.closeConnection();
             }
         }catch (Exception e){
@@ -52,7 +89,7 @@ public class AccountView extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection.
+        // TODO: Add more pages: watchlist, add friends, edit profile, etc.
         if(item.getItemId() == R.id.friend_list) {
             Intent friendList = new Intent(getApplicationContext(), FriendList.class);
             int user = getIntent().getIntExtra("userid", 0);
