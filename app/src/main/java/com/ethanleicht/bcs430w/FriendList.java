@@ -30,7 +30,8 @@ public class FriendList extends AppCompatActivity {
             // Get username and other user info
             ArrayList<String> usernames = new ArrayList<String>();
             ArrayList<String> pfps = new ArrayList<String>();
-            String query = "SELECT friend.username AS 'friend', friend.pfp AS pic FROM users AS u " +
+            String query = "SELECT friend.username AS 'friend', friend.pfp AS pic, friend.userid AS friendid " +
+                    "FROM users AS u " +
                     "JOIN friendship AS fs ON u.userid = fs.user1 " +
                     "JOIN users AS friend ON friend.userid = fs.user2 " +
                     "WHERE u.userid = " + user;
@@ -39,13 +40,13 @@ public class FriendList extends AppCompatActivity {
                 usernames.add(result.getString("friend"));
                 // TODO: Add friend profile pictures from blob
                 if(result.getBlob("pic") != null) {
-                    String imageUrl = "http://108.14.0.126/BCS430w/" + result.getString("userid") + ".png";
+                    String imageUrl = result.getString("friendid");
                     pfps.add(imageUrl);
                 }
                 while (result.next()) {
                     usernames.add(result.getString(1));
                     if(result.getBlob("pic") != null) {
-                        String imageUrl = "http://108.14.0.126/BCS430w/" + result.getString("userid") + ".png";
+                        String imageUrl = result.getString("friendid");
                         pfps.add(imageUrl);
                     }
                 }

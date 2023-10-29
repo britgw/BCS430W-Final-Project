@@ -21,12 +21,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private List<String> usernames;
     private List<String> pfps;
 
+    private static UserAdapterListener listener;
+
+    void setOnItemClickListener(UserAdapterListener _listener)
+    {
+        listener = _listener;
+    }
+
+    interface UserAdapterListener {
+        void onClick(int position);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView username;
         private ImageView pfp;
 
         public ViewHolder(View view) {
             super(view);
+
+
+            view.setOnClickListener( v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onClick(position);
+                }
+            });
+
             username = (TextView) view.findViewById(R.id.usernameView);
             pfp = (ImageView) view.findViewById(R.id.pfpView);
         }
@@ -37,17 +57,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         public ImageView getPfp() {
             return pfp;
         }
-    }
-
-    private UserAdapterListener listener;
-
-    void setOnItemClickListener(UserAdapterListener _listener)
-    {
-        listener = _listener;
-    }
-
-    interface UserAdapterListener {
-        void onClick(int position);
     }
 
     public UserAdapter(List<String> usernameSet, List<String> pfpSet) {
@@ -68,7 +77,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         viewHolder.getUsername().setText(usernames.get(position));
         try {
-            URL urlConnection = new URL(pfps.get(position));
+            URL urlConnection = new URL("http://108.14.0.126/BCS430w/"+ pfps.get(position) + ".png");
             HttpURLConnection connection = (HttpURLConnection) urlConnection
                     .openConnection();
             connection.setDoInput(true);
@@ -77,6 +86,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             Bitmap bmp = BitmapFactory.decodeStream(input);
             viewHolder.getPfp().setImageBitmap(bmp);
         }catch (Exception e){
+            try {
+                URL urlConnection = new URL("http://108.14.0.126/BCS430w/"+ pfps.get(position) + ".jpg");
+                HttpURLConnection connection = (HttpURLConnection) urlConnection
+                        .openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap bmp = BitmapFactory.decodeStream(input);
+                viewHolder.getPfp().setImageBitmap(bmp);
+            }catch (Exception ex){
+                Log.e("MOVIEDB", "INVALID IMAGE");
+                Log.e("MOVIEDB", ex.toString());
+            }
             Log.e("MOVIEDB", "INVALID IMAGE");
             Log.e("MOVIEDB", e.toString());
         }

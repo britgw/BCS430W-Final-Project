@@ -6,4 +6,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="Friend List" />
+    <item
+        android:id="@+id/addFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Add Friend" />
 </menu>

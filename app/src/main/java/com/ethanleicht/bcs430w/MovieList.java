@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -151,8 +152,10 @@ public class MovieList extends AppCompatActivity {
             return true;
         }else if(item.getItemId() == R.id.profile) {
             Intent profile = new Intent(getApplicationContext(), AccountView.class); // change to register
-            if(getIntent().getIntExtra("userid", 0) != 0) {
-                profile = new Intent(getApplicationContext(), AccountView.class);
+            if(getIntent().getIntExtra("userid", 0) == 0) {
+                setResult(Activity.RESULT_OK);
+                finish();
+                return true;
             }
             int user = getIntent().getIntExtra("userid", 0);
             profile.putExtra("userid", user);
