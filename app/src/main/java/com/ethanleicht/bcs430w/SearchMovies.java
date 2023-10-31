@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -60,6 +61,13 @@ public class SearchMovies extends AppCompatActivity {
                 output += movie.getString("title") + "\n";
             }
             movieAdapter.setData(movieResults);
+            movieAdapter.setOnItemClickListener(position -> {
+                Movie m = movieResults.get(position);
+
+                Intent movieDetails = new Intent(getApplicationContext(), MovieDetails.class);
+                movieDetails.putExtra("movieid", m.getId());
+                startActivity(movieDetails);
+            });
             searchResults.setAdapter(movieAdapter);
         }catch(Exception e){
             Log.e("MOVIEDB", e.toString());

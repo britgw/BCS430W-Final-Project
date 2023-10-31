@@ -22,7 +22,7 @@ import java.sql.Blob;
 import java.sql.ResultSet;
 
 public class AccountView extends AppCompatActivity {
-    public Bitmap getProfilePicture(int userid){
+    public static Bitmap getProfilePicture(int userid){
         try{
             URL urlConnection = new URL("http://108.14.0.126/BCS430w/"+userid+".png");
             HttpURLConnection connection = (HttpURLConnection) urlConnection

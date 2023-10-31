@@ -38,17 +38,13 @@ public class MovieDetails extends AppCompatActivity {
         wm.getDefaultDisplay().getMetrics(dm);
         int screenWidth = dm.widthPixels;
         int screenHeight = dm.heightPixels;
-        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            screenHeight = dm.widthPixels;
-            screenWidth = dm.heightPixels;
-        }
         screenWidth /= 3;
         screenHeight /= 3;
 
         // go to our website
         //webView.loadUrl("http://108.14.0.126/BCS430w/Home.html");
         String movieID = getIntent().getStringExtra("movieid");
-        webView.loadData(Movie.getTrailer(movieID, screenHeight, screenWidth), "text/html", "utf-8");
+        webView.loadData(Movie.getTrailer(movieID, screenWidth, screenHeight), "text/html", "utf-8");
 
     }
 }

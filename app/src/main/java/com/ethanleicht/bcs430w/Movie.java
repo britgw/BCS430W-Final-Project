@@ -1,6 +1,7 @@
 package com.ethanleicht.bcs430w;
 
 import android.content.Context;
+import android.os.StrictMode;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -66,9 +68,11 @@ public class Movie {
 
         try {
             JSONObject movies = Movie.readJsonFromUrl(json);
-            String key = movies.getJSONArray("results").getJSONObject(1).getString("key");
-            String frameVideo = "<html><body><iframe width=\""+width+"\" height=\""+height+"\" src=\"https://www.youtube.com/embed/"+key+"\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
-            //String frameVideo = "https://www.youtube.com/video/"+key;
+            JSONArray results = movies.getJSONArray("results");
+            String key = results.getJSONObject(results.length() - 1).getString("key");
+            //<iframe width="1264" height="480" src="https://www.youtube.com/embed/jCuEBVbmPcA" title="You Wanted a TEMU Gaming Setup…You were wrong." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            String frameVideo = "<html><body><iframe width="+width+" height="+height+" src=\"https://www.youtube.com/embed/"+key+"\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
+            //String videoLink = "https://www.youtube.com/video/"+key;
             return frameVideo;
         }catch (Exception e){
             Log.e("MOVIEDB", e.toString());

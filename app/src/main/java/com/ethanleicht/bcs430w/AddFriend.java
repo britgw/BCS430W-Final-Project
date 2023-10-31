@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -55,11 +56,9 @@ public class AddFriend extends AppCompatActivity {
                         if (getresult.first()) {
                             int userid = getresult.getInt("userid");
                             SQLConnect.closeConnection();
-                            String inquery = "INSERT IGNORE INTO friendship (user1, user2) VALUES (" +
-                                    getIntent().getIntExtra("userid", 0) + ", " + userid + ");";
-                            ResultSet inresult = SQLConnect.getResultsFromSQL(inquery);
-                            SQLConnect.closeConnection();
-                            Log.e("UserDB", "friend added");
+                            Intent friend = new Intent(getApplicationContext(), UserDetails.class);
+                            friend.putExtra("friendid", userid);
+                            startActivity(friend);
                         }
                     }catch(Exception e){
                         Log.e("UserDB", e.toString());
