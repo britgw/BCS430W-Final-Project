@@ -23,6 +23,7 @@ public class Movie {
 
     private static final String API_KEY = "api_key=0470883e66467443d1d8ad73e3c4a2ed";
     private static final String BASE_URL = "https://api.themoviedb.org/3";
+    private static final String IMG_URL = "https://image.tmdb.org/t/p/w500";
 
     private String id;
     private String title;
@@ -99,5 +100,19 @@ public class Movie {
         } finally {
             is.close();
         }
+    }
+    public static Movie getMovieById(String movieid){
+        try {
+            JSONObject movies = Movie.readJsonFromUrl(BASE_URL + movieid + API_KEY);
+            String id = movies.getString("id");
+            String title = movies.getString("title");
+            String desc = movies.getString("overview");
+            String img_url = IMG_URL + movies.getString("backdrop_path");
+            Movie m = new Movie(id, title, desc, img_url);
+            return m;
+        }catch (Exception e){
+            Log.e("MOVIEDB", e.toString());
+        }
+        return null;
     }
 }

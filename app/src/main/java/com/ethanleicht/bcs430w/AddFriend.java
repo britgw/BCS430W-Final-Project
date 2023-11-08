@@ -14,11 +14,7 @@ import java.util.ArrayList;
 
 public class AddFriend extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_friend);
-
+    protected void updateSearchResults(){
         TextView search = findViewById(R.id.friendSearchBar);
 
         RecyclerView userList = findViewById(R.id.friendSearchView);
@@ -32,18 +28,11 @@ public class AddFriend extends AppCompatActivity {
                 String query = "SELECT username, userid, pfp FROM users " +
                         "WHERE username LIKE '%" + search.getText().toString() + "%'";
                 ResultSet result = SQLConnect.getResultsFromSQL(query);
-                if(result.first()) {
+                while (result.next()) {
                     usernames.add(result.getString("username"));
-                    if(result.getBlob("pfp") != null) {
+                    if (result.getBlob("pfp") != null) {
                         String imageUrl = result.getString("userid");
                         pfps.add(imageUrl);
-                    }
-                    while (result.next()) {
-                        usernames.add(result.getString("username"));
-                        if(result.getBlob("pfp") != null) {
-                            String imageUrl = result.getString("userid");
-                            pfps.add(imageUrl);
-                        }
                     }
                 }
                 SQLConnect.closeConnection();
@@ -71,6 +60,17 @@ public class AddFriend extends AppCompatActivity {
             }
             return true;
         });
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_friend);
+        updateSearchResults();
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        updateSearchResults();
     }
 }

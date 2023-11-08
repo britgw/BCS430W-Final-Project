@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Import buttons and text inputs
         Button loginButton = (Button) findViewById(R.id.loginButton);
+        Button registerButton = (Button) findViewById(R.id.registerButton);
         Button guestButton = (Button) findViewById(R.id.guestButton);
         TextView username = (TextView) findViewById(R.id.usernameInput);
         TextView password = (TextView) findViewById(R.id.passwordInput);
@@ -32,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
         guestButton.setOnClickListener(v -> {
             Intent movieList = new Intent(getApplicationContext(), MovieList.class);
             startActivity(movieList);
+        });
+        registerButton.setOnClickListener(v -> {
+            Intent registerView = new Intent(getApplicationContext(), AccountRegister.class);
+            startActivity(registerView);
         });
 
         loginButton.setOnClickListener(v -> {

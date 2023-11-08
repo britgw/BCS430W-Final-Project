@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,9 +23,9 @@ import java.util.ArrayList;
 
 public class UserDetails extends AppCompatActivity {
 
-    private static String BASE_URL = "https://api.themoviedb.org/3/movie/";
-    private static String API_KEY = "?api_key=0470883e66467443d1d8ad73e3c4a2ed";
-    private final String IMG_URL = "https://image.tmdb.org/t/p/w500";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String API_KEY = "?api_key=0470883e66467443d1d8ad73e3c4a2ed";
+    private static final String IMG_URL = "https://image.tmdb.org/t/p/w500";
 
 
     @Override
