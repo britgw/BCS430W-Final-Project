@@ -103,8 +103,9 @@ public class Movie {
     }
     public static Movie getMovieById(String movieid){
         try {
-            JSONObject movies = Movie.readJsonFromUrl(BASE_URL + movieid + API_KEY);
-            String id = movies.getString("id");
+            String url = BASE_URL + "/movie/" + movieid + "?" + API_KEY;
+            JSONObject movies = Movie.readJsonFromUrl(BASE_URL + "/movie/" + movieid + "?" + API_KEY);
+            String id = movieid;
             String title = movies.getString("title");
             String desc = movies.getString("overview");
             String img_url = IMG_URL + movies.getString("backdrop_path");

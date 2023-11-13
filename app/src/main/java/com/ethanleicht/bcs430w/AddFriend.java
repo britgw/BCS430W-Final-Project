@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AddFriend extends AppCompatActivity {
 
@@ -27,7 +29,8 @@ public class AddFriend extends AppCompatActivity {
             try{
                 String query = "SELECT username, userid, pfp FROM users " +
                         "WHERE username LIKE '%" + search.getText().toString() + "%'";
-                ResultSet result = SQLConnect.getResultsFromSQL(query);
+                SQLConnect con = new SQLConnect();
+                ResultSet result = con.getResultsFromSQL(query);
                 while (result.next()) {
                     usernames.add(result.getString("username"));
                     if (result.getBlob("pfp") != null) {
@@ -35,16 +38,21 @@ public class AddFriend extends AppCompatActivity {
                         pfps.add(imageUrl);
                     }
                 }
-                SQLConnect.closeConnection();
-                userAdapter.setData(usernames, pfps);
+                con.closeConnection();
+                ArrayList<String> usernameList = new ArrayList<String>();
+                for(String u: usernames){
+                    if(!usernameList.contains(u))
+                        usernameList.add(u);
+                }
+                userAdapter.setData(usernameList, pfps);
                 userAdapter.setOnItemClickListener(position -> {
                     try {
                         String getquery = "SELECT userid FROM users " +
                                 "WHERE username = '" + usernames.get(position) + "';";
-                        ResultSet getresult = SQLConnect.getResultsFromSQL(getquery);
+                        ResultSet getresult = con.getResultsFromSQL(getquery);
                         if (getresult.first()) {
                             int userid = getresult.getInt("userid");
-                            SQLConnect.closeConnection();
+                            con.closeConnection();
                             Intent friend = new Intent(getApplicationContext(), UserDetails.class);
                             friend.putExtra("friendid", userid);
                             startActivity(friend);

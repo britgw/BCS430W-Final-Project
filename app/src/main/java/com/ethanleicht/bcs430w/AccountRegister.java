@@ -2,6 +2,7 @@ package com.ethanleicht.bcs430w;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class AccountRegister extends AppCompatActivity {
     @Override
@@ -40,12 +42,16 @@ public class AccountRegister extends AppCompatActivity {
                         lastName.getText().toString() + "', '" +
                         email.getText().toString() + "', '" +
                         password.getText().toString() + "')";
-                ResultSet result = SQLConnect.getResultsFromSQL(query);
+                SQLConnect con = new SQLConnect();
+                ResultSet result = con.getResultsFromSQL(query);
                 try {
                     //String response = result.getMetaData().getColumnName(0);
                     if(result.first()) {
                         String response = result.getString(1);
+                        getIntent().putExtra("userid", Integer.parseInt(response));
                         Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                        Log.d("SQL", response);
+
                     }else{
                         Log.e("SQL", "Statement returns nothing");
                     }
@@ -53,7 +59,7 @@ public class AccountRegister extends AppCompatActivity {
                     Log.e("SQL", e.toString());
                 }
 
-                SQLConnect.closeConnection();
+                con.closeConnection();
                 finish();
             }else{
                 if(!username.getText().toString().equals(""))

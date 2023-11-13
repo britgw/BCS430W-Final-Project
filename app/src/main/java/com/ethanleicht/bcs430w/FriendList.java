@@ -35,7 +35,8 @@ public class FriendList extends AppCompatActivity {
                     "JOIN friendship AS fs ON u.userid = fs.user1 " +
                     "JOIN users AS friend ON friend.userid = fs.user2 " +
                     "WHERE u.userid = " + user;
-            ResultSet result = SQLConnect.getResultsFromSQL(query);
+            SQLConnect con = new SQLConnect();
+            ResultSet result = con.getResultsFromSQL(query);
             if(result.first()) {
                 usernames.add(result.getString("friend"));
                 // TODO: Add friend profile pictures from blob
@@ -51,7 +52,7 @@ public class FriendList extends AppCompatActivity {
                     }
                 }
             }
-            SQLConnect.closeConnection();
+            con.closeConnection();
             userAdapter.setData(usernames, pfps);
             friendList.setAdapter(userAdapter);
 

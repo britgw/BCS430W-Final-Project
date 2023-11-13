@@ -1,5 +1,6 @@
 package com.ethanleicht.bcs430w;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -87,6 +88,15 @@ public class MovieList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                //getIntent().putExtra("userid", 0);
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
+
         Toolbar myToolbar = (Toolbar) findViewById(R.id.movieListToolbar);
         myToolbar.setTitle("Movie List");
         setSupportActionBar(myToolbar);
@@ -160,6 +170,12 @@ public class MovieList extends AppCompatActivity {
             int user = getIntent().getIntExtra("userid", 0);
             profile.putExtra("userid", user);
             startActivity(profile);
+            return true;
+        }else if(item.getItemId() == R.id.reviewMenuItem) {
+            Intent ReviewIntent = new Intent(getApplicationContext(), MovieReviews.class);
+            int user = getIntent().getIntExtra("userid", 0);
+            ReviewIntent.putExtra("userid", user);
+            startActivity(ReviewIntent);
             return true;
         }else{
             return super.onOptionsItemSelected(item);

@@ -1,7 +1,12 @@
 package com.ethanleicht.bcs430w;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -17,7 +22,14 @@ import java.net.URL;
 import java.sql.ResultSet;
 
 public class MainActivity extends AppCompatActivity {
-
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent intent = result.getData();
+                    if (intent != null && intent.getExtras() != null)
+                        getIntent().putExtras(intent.getExtras());
+                }
+            });
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
 
         guestButton.setOnClickListener(v -> {
             Intent movieList = new Intent(getApplicationContext(), MovieList.class);
-            startActivity(movieList);
+            mStartForResult.launch(movieList);
         });
         registerButton.setOnClickListener(v -> {
             Intent registerView = new Intent(getApplicationContext(), AccountRegister.class);
-            startActivity(registerView);
+            mStartForResult.launch(registerView);
         });
 
         loginButton.setOnClickListener(v -> {
@@ -44,8 +56,9 @@ public class MainActivity extends AppCompatActivity {
             if(!username.getText().toString().equals("") && !password.getText().toString().equals("")) {
                 try{
                     // Validate username and password   TODO: Decrypt passwords with PHP code
-                    String checkUsername = "username = '"+username.getText().toString()+"'";
-                    String checkPassword = "userid = "+password.getText().toString();
+                    String checkUsername = "username = '" + username.getText().toString() + "'";
+                    String checkPassword = "userid = '" + password.getText().toString() +
+                            "' OR password = '" + password.getText().toString() + "'";
                     // Get Password from PHP
                     /*try {
                         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -66,16 +79,18 @@ public class MainActivity extends AppCompatActivity {
                     }*/
 
                     String query = "SELECT * FROM users WHERE "+checkUsername+" AND "+checkPassword;
-                    ResultSet result = SQLConnect.getResultsFromSQL(query);
+                    SQLConnect con = new SQLConnect();
+                    ResultSet result = con.getResultsFromSQL(query);
 
                     if(result != null && result.first()){
                         // Go to MovieList page
                         int user = result.getInt("userid");
                         Intent movieList = new Intent(getApplicationContext(), MovieList.class);
                         movieList.putExtra("userid", result.getInt("userid"));
-                        SQLConnect.closeConnection();
-                        startActivity(movieList);
+                        con.closeConnection();
+                        mStartForResult.launch(movieList);
                     }else{
+                        con.closeConnection();
                         Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_LONG).show();
                     }
                 }catch (Exception e){

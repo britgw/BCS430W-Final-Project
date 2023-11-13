@@ -45,22 +45,23 @@ public class UserDetails extends AppCompatActivity {
         try{
             // Get username and other user info
             String query = "SELECT * FROM users WHERE userid = " + friend;
-            ResultSet result = SQLConnect.getResultsFromSQL(query);
+            SQLConnect con = new SQLConnect();
+            ResultSet result = con.getResultsFromSQL(query);
             if(result.first()) {
                 username.setText(result.getString("username"));
                 bio.setText(result.getString("bio"));
                 pfp.setImageBitmap(AccountView.getProfilePicture(friend));
-                SQLConnect.closeConnection();
                 watchlist.setLayoutManager(new GridLayoutManager(this, 3));
                 query = "SELECT * FROM watchlist WHERE userid = " + friend;
-                result = SQLConnect.getResultsFromSQL(query);
+                SQLConnect con2 = new SQLConnect();
+                ResultSet result2 = con2.getResultsFromSQL(query);
 
                 ArrayList<Movie> movieResults = new ArrayList<Movie>();
-                while(result.next()){
+                while(result2.next()){
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
                     // Get Movies from search query
-                    JSONObject movies = Movie.readJsonFromUrl(BASE_URL+result.getInt("movie")+API_KEY);
+                    JSONObject movies = Movie.readJsonFromUrl(BASE_URL+result2.getInt("movie")+API_KEY);
 
                     String id = movies.getString("id");
                     String title = movies.getString("title");
@@ -69,6 +70,7 @@ public class UserDetails extends AppCompatActivity {
                     Movie m = new Movie(id, title, desc, img_url);
                     movieResults.add(m);
                 }
+                con2.closeConnection();
                 movieAdapter.setData(movieResults);
                 movieAdapter.setOnItemClickListener(position -> {
                     Movie m = movieResults.get(position);
@@ -79,6 +81,8 @@ public class UserDetails extends AppCompatActivity {
                 });
                 watchlist.setAdapter(movieAdapter);
             }
+            con.closeConnection();
+
         }catch (Exception e){
             Log.e("MOVIEDB", "Invalid user");
             Log.e("MOVIEDB", e.toString());
@@ -91,8 +95,9 @@ public class UserDetails extends AppCompatActivity {
                 String inquery = "INSERT IGNORE INTO friendship (user1, user2) VALUES (" +
                         getIntent().getIntExtra("userid", 0) + ", " +
                         getIntent().getIntExtra("friendid", 0) + ");";
-                ResultSet inresult = SQLConnect.getResultsFromSQL(inquery);
-                SQLConnect.closeConnection();
+                SQLConnect con = new SQLConnect();
+                ResultSet inresult = con.getResultsFromSQL(inquery);
+                con.closeConnection();
             }catch (Exception e){
                 Log.e("DB", e.toString());
             }
