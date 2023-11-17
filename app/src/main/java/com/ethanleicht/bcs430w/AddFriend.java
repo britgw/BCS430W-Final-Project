@@ -54,6 +54,7 @@ public class AddFriend extends AppCompatActivity {
                             int userid = getresult.getInt("userid");
                             con.closeConnection();
                             Intent friend = new Intent(getApplicationContext(), UserDetails.class);
+                            friend.putExtra("userid", getIntent().getIntExtra("userid", 0));
                             friend.putExtra("friendid", userid);
                             startActivity(friend);
                         }

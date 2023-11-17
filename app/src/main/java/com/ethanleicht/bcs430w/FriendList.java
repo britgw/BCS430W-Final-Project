@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -54,6 +55,23 @@ public class FriendList extends AppCompatActivity {
             }
             con.closeConnection();
             userAdapter.setData(usernames, pfps);
+            userAdapter.setOnItemClickListener(position -> {
+                try {
+                    String getquery = "SELECT userid FROM users " +
+                            "WHERE username = '" + usernames.get(position) + "';";
+                    ResultSet getresult = con.getResultsFromSQL(getquery);
+                    if (getresult.first()) {
+                        int userid = getresult.getInt("userid");
+                        con.closeConnection();
+                        Intent friend = new Intent(getApplicationContext(), UserDetails.class);
+                        friend.putExtra("friendid", userid);
+                        friend.putExtra("userid", getIntent().getIntExtra("userid", 0));
+                        startActivity(friend);
+                    }
+                }catch(Exception e){
+                    Log.e("UserDB", e.toString());
+                }
+            });
             friendList.setAdapter(userAdapter);
 
         }catch (Exception e){

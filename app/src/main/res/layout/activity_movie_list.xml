@@ -39,31 +39,35 @@
 
         <Button
             android:id="@+id/popularButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Popular" />
+            android:text="Popular"
+            android:textSize="10sp" />
 
         <Button
             android:id="@+id/trendingButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Trending" />
+            android:text="Trending"
+            android:textSize="10sp" />
 
         <Button
             android:id="@+id/topRatedButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Top Rated" />
+            android:text="Top Rated"
+            android:textSize="10sp" />
 
         <Button
             android:id="@+id/nowPlayingButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Playing" />
+            android:text="Playing"
+            android:textSize="10sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

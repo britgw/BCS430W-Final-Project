@@ -113,6 +113,7 @@ public class AccountView extends AppCompatActivity {
 
                     Intent movieDetails = new Intent(getApplicationContext(), MovieDetails.class);
                     movieDetails.putExtra("movieid", m.getId());
+                    movieDetails.putExtra("userid", getIntent().getIntExtra("userid", 0));
                     startActivity(movieDetails);
                 });
                 watchlist.setAdapter(movieAdapter);

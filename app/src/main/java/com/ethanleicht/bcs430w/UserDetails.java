@@ -41,6 +41,7 @@ public class UserDetails extends AppCompatActivity {
 
         MovieAdapter movieAdapter = new MovieAdapter(new ArrayList<Movie>());
         int friend = getIntent().getIntExtra("friendid", 0);
+        int user = getIntent().getIntExtra("useridid", 0);
 
         try{
             // Get username and other user info
@@ -88,15 +89,53 @@ public class UserDetails extends AppCompatActivity {
             Log.e("MOVIEDB", e.toString());
         }
 
-
+        // Set button to say add or remove
+        try {
+            String query = "SELECT * FROM friendship";
+            SQLConnect con3 = new SQLConnect(query);
+            ResultSet rs = con3.getResult();
+            String userid = String.valueOf(user);
+            String friendid = String.valueOf(friend);
+            while (rs.next()) {
+                if(rs.getString("user1").equals(userid) && rs.getString("user2").equals(friendid)){
+                    addFriend.setText(R.string.remove_friend);
+                }
+            }
+            con3.closeConnection();
+        }catch (Exception e){
+            Log.e("SQL", e.toString());
+        }
 
         addFriend.setOnClickListener(l -> {
+            // Set button to add or remove
+            boolean friends = false;
+            try {
+                String query = "SELECT * FROM friendship";
+                SQLConnect con4 = new SQLConnect(query);
+                ResultSet rs = con4.getResult();
+                String userid = String.valueOf(user);
+                String friendid = String.valueOf(friend);
+                while (rs.next()) {
+                    if(rs.getString("user1").equals(userid) && rs.getString("user2").equals(friendid)){
+                        friends = false;
+                    }
+                }
+                con4.closeConnection();
+            }catch (Exception e){
+                Log.e("SQL", e.toString());
+            }
             try{
                 String inquery = "INSERT IGNORE INTO friendship (user1, user2) VALUES (" +
                         getIntent().getIntExtra("userid", 0) + ", " +
                         getIntent().getIntExtra("friendid", 0) + ");";
-                SQLConnect con = new SQLConnect();
-                ResultSet inresult = con.getResultsFromSQL(inquery);
+                if(!friends) {
+                    inquery = "DELETE FROM friendship (user1, user2) WHERE " +
+                            "user1 = " +
+                            getIntent().getIntExtra("userid", 0) + ", " +
+                            " AND user2 = " +
+                            getIntent().getIntExtra("friendid", 0) + ");";
+                }
+                SQLConnect con = new SQLConnect(inquery);
                 con.closeConnection();
             }catch (Exception e){
                 Log.e("DB", e.toString());

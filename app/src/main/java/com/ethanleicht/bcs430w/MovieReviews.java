@@ -36,9 +36,10 @@ public class MovieReviews extends AppCompatActivity {
             // Get Movies from search query
             String query = "SELECT * FROM moviereview " +
                     "JOIN users ON moviereview.userid = users.userid ";
-            if(!searchBar.getText().toString().equals(""))
-                query += "WHERE users.username LIKE '%"+searchBar.getText().toString()+"%' " +
-                        "AND privacy = 'Public'";
+            String searchQuery = searchBar.getText().toString();
+            //if(!searchBar.getText().toString().equals(""))
+                //query += "WHERE users.username LIKE '%"+searchBar.getText().toString()+"%' " +
+                //        "AND privacy = 'Public'";
 
             SQLConnect con = new SQLConnect();
             ResultSet result = con.getResultsFromSQL(query);
@@ -46,19 +47,21 @@ public class MovieReviews extends AppCompatActivity {
             while(result.next()){
                 // Get the movie at index i
                 String movieid = result.getString("moviereview.movieid");
-                Movie m = Movie.getMovieById(result.getString("moviereview.movieid"));
-                // Get Username
-                String user = result.getString("users.privacy").equals("public")?
-                        result.getString("users.username") : "Unknown";
-                // Make movie object
-                String id = m.getId();
-                String title = m.getTitle();
-                String desc = user + ": " +
-                        result.getInt("moviereview.Rating") + "/5: " +
-                        result.getString("moviereview.Description");
-                String img_url = IMG_URL + m.getImg();
-                Movie movie = new Movie(id, title, desc, img_url);
-                movieResults.add(movie);
+                if(!movieid.equals("0")) {
+                    Movie m = Movie.getMovieById(result.getString("moviereview.movieid"));
+                    // Get Username
+                    String user = result.getString("users.privacy").equals("public") ?
+                            result.getString("users.username") : "Unknown";
+                    // Make movie object
+                    String id = m.getId();
+                    String title = m.getTitle();
+                    String desc = user + ": " +
+                            result.getInt("moviereview.Rating") + "/5: " +
+                            result.getString("moviereview.Description");
+                    String img_url = IMG_URL + m.getImg();
+                    Movie movie = new Movie(id, title, desc, img_url);
+                    movieResults.add(movie);
+                }
             }
             con.closeConnection();
             movieAdapter.setData(movieResults);

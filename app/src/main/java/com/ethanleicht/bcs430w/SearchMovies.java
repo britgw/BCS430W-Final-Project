@@ -66,6 +66,7 @@ public class SearchMovies extends AppCompatActivity {
 
                 Intent movieDetails = new Intent(getApplicationContext(), MovieDetails.class);
                 movieDetails.putExtra("movieid", m.getId());
+                movieDetails.putExtra("userid", getIntent().getIntExtra("userid", 0));
                 startActivity(movieDetails);
             });
             searchResults.setAdapter(movieAdapter);

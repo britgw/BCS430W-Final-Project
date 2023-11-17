@@ -32,7 +32,7 @@ public class MovieList extends AppCompatActivity {
     private final String API_KEY = "api_key=0470883e66467443d1d8ad73e3c4a2ed";
     private final String BASE_URL = "https://api.themoviedb.org/3";
     private final String POPULAR_URL = BASE_URL + "/discover/movie?sort_by=popularity.desc&"+API_KEY;
-    private final String TRENDING_URL = BASE_URL + "/trending/all/day?"+API_KEY;
+    private final String TRENDING_URL = BASE_URL + "/trending/movie/day?"+API_KEY;
     private final String TOPRATED_URL = BASE_URL + "/movie/top_rated?"+API_KEY;
     private final String NOWPLAYING_URL = BASE_URL + "/movie/now_playing?"+API_KEY;
     private final String IMG_URL = "https://image.tmdb.org/t/p/w500";
@@ -75,6 +75,7 @@ public class MovieList extends AppCompatActivity {
 
                 Intent movieDetails = new Intent(getApplicationContext(), MovieDetails.class);
                 movieDetails.putExtra("movieid", m.getId());
+                movieDetails.putExtra("userid", getIntent().getIntExtra("userid", 0));
                 startActivity(movieDetails);
             });
             movieListView.setAdapter(movieAdapter);

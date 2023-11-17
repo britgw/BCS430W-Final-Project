@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -11,6 +12,9 @@ import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+
+import java.sql.ResultSet;
 
 public class MovieDetails extends AppCompatActivity {
 
@@ -18,6 +22,25 @@ public class MovieDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
+        Button watchlistButton = findViewById(R.id.addToWatchlist);
+        watchlistButton.setOnClickListener(l -> {
+            String query = "INSERT IGNORE INTO watchlist (userid, movie) VALUES (" +
+                    getIntent().getIntExtra("userid", 0) + ", " +
+                    getIntent().getStringExtra("movieid") + ")";
+            SQLConnect con = new SQLConnect(query);
+            con.closeConnection();
+        });
+        Button reviewButton = findViewById(R.id.writeReview);
+        reviewButton.setOnClickListener(l -> {
+            Intent ReviewIntent = new Intent(getApplicationContext(), MovieReviewAdd.class);
+            int user = getIntent().getIntExtra("userid", 0);
+            ReviewIntent.putExtra("userid", user);
+            String movie = getIntent().getStringExtra("movieid");
+            ReviewIntent.putExtra("movieid", movie);
+            startActivity(ReviewIntent);
+        });
+
 
         // Setup webview
         WebView webView = findViewById(R.id.TrailerBox);
