@@ -28,7 +28,8 @@ public class AddFriend extends AppCompatActivity {
         search.setOnKeyListener((l, k, j) -> {
             try{
                 String query = "SELECT username, userid, pfp FROM users " +
-                        "WHERE username LIKE '%" + search.getText().toString() + "%'";
+                        "WHERE username LIKE '%" + search.getText().toString() + "%' " +
+                        "AND userid != " + getIntent().getIntExtra("userid", 0);
                 SQLConnect con = new SQLConnect();
                 ResultSet result = con.getResultsFromSQL(query);
                 while (result.next()) {
@@ -74,6 +75,10 @@ public class AddFriend extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
+
+        TextView search = findViewById(R.id.friendSearchBar);
+        search.setText("");
+
         updateSearchResults();
     }
 

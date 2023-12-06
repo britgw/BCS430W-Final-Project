@@ -13,6 +13,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.sql.ResultSet;
 
@@ -25,6 +26,9 @@ public class MovieDetails extends AppCompatActivity {
 
         Button watchlistButton = findViewById(R.id.addToWatchlist);
         watchlistButton.setOnClickListener(l -> {
+            if(getIntent().getIntExtra("userid", 0) == 0){
+                Toast.makeText(getApplicationContext(), "Not logged in", Toast.LENGTH_SHORT);
+            }
             String query = "INSERT IGNORE INTO watchlist (userid, movie) VALUES (" +
                     getIntent().getIntExtra("userid", 0) + ", " +
                     getIntent().getStringExtra("movieid") + ")";

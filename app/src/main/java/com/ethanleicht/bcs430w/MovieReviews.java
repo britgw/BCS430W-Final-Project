@@ -50,7 +50,7 @@ public class MovieReviews extends AppCompatActivity {
                 if(!movieid.equals("0")) {
                     Movie m = Movie.getMovieById(result.getString("moviereview.movieid"));
                     // Get Username
-                    String user = result.getString("users.privacy").equals("public") ?
+                    String user = result.getString("users.privacy").equals("Public") ?
                             result.getString("users.username") : "Unknown";
                     // Make movie object
                     String id = m.getId();

@@ -5,11 +5,25 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +34,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -30,6 +45,60 @@ public class MainActivity extends AppCompatActivity {
                         getIntent().putExtras(intent.getExtras());
                 }
             });
+
+    public void scheduleNotification(Event e) {
+        //delay is after how much time(in millis) from current time you want to schedule the notification
+        long delay = 1000;
+        try {
+            SQLConnect timeCon = new SQLConnect();
+            ResultSet timeRes = timeCon.getResultsFromSQL("SELECT TIMESTAMPDIFF(SECOND, NOW()," +
+                    "(SELECT TIME FROM WATCHPARTY WHERE watchpartyid = " + e.getId() + "))");
+            if (timeRes.first()) {
+                delay = Integer.parseInt(timeRes.getString(1));
+                delay = delay - 300;
+                delay = delay * 1000;
+            }
+
+            // Register the channel with the system. You can't change the importance
+            // or other notification behaviors after this.
+            CharSequence name = "MovieEvents";
+            String description = "Events from Movie App";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("events", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+            // Open Event on click (Not working)
+            Intent intent = new Intent(getApplicationContext(), Events.class);
+            PendingIntent activity = PendingIntent.getActivity(getApplicationContext(), e.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            // Format notification
+            Notification notification = new Notification.Builder(getApplicationContext(), "events")
+                    .setSmallIcon(android.R.drawable.presence_video_online)
+                    .setContentTitle("Movie")
+                    .setContentText(e.getMovie() + " starts in 5 minutes")
+                    .setContentIntent(activity)
+                    .build();
+
+            // Create PendingIntent for when the alarm goes off
+            Intent notificationIntent = new Intent(getApplicationContext(), EventReceiver.class);
+            notificationIntent.putExtra("notification_id", e.getId());
+            notificationIntent.putExtra("notification", notification);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), e.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            // Schedule alarms
+            long futureInMillis = SystemClock.elapsedRealtime() + delay;
+            AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if(alarmManager.canScheduleExactAlarms())
+                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+            }
+        }catch(Exception exception){
+            Log.e("SQL", exception.toString());
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +152,36 @@ public class MainActivity extends AppCompatActivity {
                     ResultSet result = con.getResultsFromSQL(query);
 
                     if(result != null && result.first()){
-                        // Go to MovieList page
                         int user = result.getInt("userid");
+                        if(!NotificationManagerCompat.from(getApplicationContext()).areNotificationsEnabled()){
+                            Toast.makeText(getApplicationContext(), "Notifications not enabled", Toast.LENGTH_SHORT).show();
+                            requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 0);
+                        }else{
+                            // Setup Notifications
+                            query = "SELECT w.*, u.* FROM watchparty as w " +
+                                    "JOIN rsvp on rsvp.watchparty = w.watchpartyid " +
+                                    "JOIN users as u on rsvp.user = u.userid " +
+                                    "WHERE u.userid = " + user + " AND " +
+                                    "w.creator != " + user +
+                                    " UNION ALL " +
+                                    "SELECT w.*, u.* FROM watchparty as w " +
+                                    "JOIN users as u on w.creator = u.userid " +
+                                    "WHERE w.creator = " + user;
+                            SQLConnect eventCon = new SQLConnect();
+                            ResultSet eventResult = con.getResultsFromSQL(query);
+                            ArrayList<Event> events = new ArrayList<Event>();
+                            while (eventResult.next()) {
+                                int eId = Integer.parseInt(eventResult.getString("watchpartyid"));
+                                String eMovie = eventResult.getString("movie");
+                                int eCreator = Integer.parseInt(eventResult.getString("creator"));
+                                String eTime = eventResult.getString("time");
+                                events.add(new Event(eId, eMovie, eTime, eCreator));
+                            }
+                            for (Event event : events) {
+                                scheduleNotification(event);
+                            }
+                        }
+                        // Go to MovieList page
                         Intent movieList = new Intent(getApplicationContext(), MovieList.class);
                         movieList.putExtra("userid", result.getInt("userid"));
                         con.closeConnection();

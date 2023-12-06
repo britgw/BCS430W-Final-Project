@@ -65,7 +65,8 @@ public class FriendList extends AppCompatActivity {
                         con.closeConnection();
                         Intent friend = new Intent(getApplicationContext(), UserDetails.class);
                         friend.putExtra("friendid", userid);
-                        friend.putExtra("userid", getIntent().getIntExtra("userid", 0));
+                        int currentUser = getIntent().getIntExtra("userid", 0);
+                        friend.putExtra("userid", currentUser);
                         startActivity(friend);
                     }
                 }catch(Exception e){

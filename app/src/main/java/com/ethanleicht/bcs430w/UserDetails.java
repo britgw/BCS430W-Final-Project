@@ -41,7 +41,7 @@ public class UserDetails extends AppCompatActivity {
 
         MovieAdapter movieAdapter = new MovieAdapter(new ArrayList<Movie>());
         int friend = getIntent().getIntExtra("friendid", 0);
-        int user = getIntent().getIntExtra("useridid", 0);
+        int user = getIntent().getIntExtra("userid", 0);
 
         try{
             // Get username and other user info
@@ -92,8 +92,8 @@ public class UserDetails extends AppCompatActivity {
         // Set button to say add or remove
         try {
             String query = "SELECT * FROM friendship";
-            SQLConnect con3 = new SQLConnect(query);
-            ResultSet rs = con3.getResult();
+            SQLConnect con3 = new SQLConnect();
+            ResultSet rs = con3.getResultsFromSQL(query);
             String userid = String.valueOf(user);
             String friendid = String.valueOf(friend);
             while (rs.next()) {
@@ -111,13 +111,16 @@ public class UserDetails extends AppCompatActivity {
             boolean friends = false;
             try {
                 String query = "SELECT * FROM friendship";
-                SQLConnect con4 = new SQLConnect(query);
-                ResultSet rs = con4.getResult();
+                SQLConnect con4 = new SQLConnect();
+                ResultSet rs = con4.getResultsFromSQL(query);
                 String userid = String.valueOf(user);
                 String friendid = String.valueOf(friend);
                 while (rs.next()) {
-                    if(rs.getString("user1").equals(userid) && rs.getString("user2").equals(friendid)){
-                        friends = false;
+                    String user1 = rs.getString("user1");
+                    String user2 = rs.getString("user2");
+                    if(user1.equals(userid) && user2.equals(friendid)){
+                        friends = true;
+                        addFriend.setText("Remove Friend");
                     }
                 }
                 con4.closeConnection();
@@ -128,14 +131,17 @@ public class UserDetails extends AppCompatActivity {
                 String inquery = "INSERT IGNORE INTO friendship (user1, user2) VALUES (" +
                         getIntent().getIntExtra("userid", 0) + ", " +
                         getIntent().getIntExtra("friendid", 0) + ");";
-                if(!friends) {
-                    inquery = "DELETE FROM friendship (user1, user2) WHERE " +
+                addFriend.setText(R.string.remove_friend);
+                if(friends) {
+                    inquery = "DELETE FROM friendship WHERE " +
                             "user1 = " +
-                            getIntent().getIntExtra("userid", 0) + ", " +
+                            getIntent().getIntExtra("userid", 0) +
                             " AND user2 = " +
-                            getIntent().getIntExtra("friendid", 0) + ");";
+                            getIntent().getIntExtra("friendid", 0);
+                    addFriend.setText(R.string.add_friend);
                 }
-                SQLConnect con = new SQLConnect(inquery);
+                SQLConnect con = new SQLConnect();
+                con.getResultsFromSQL(inquery);
                 con.closeConnection();
             }catch (Exception e){
                 Log.e("DB", e.toString());

@@ -17,7 +17,7 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     private List<Movie> movieSet;
 
-    private static MovieAdapterListener listener;
+    private MovieAdapterListener listener;
 
     void setOnItemClickListener(MovieAdapterListener _listener)
     {
@@ -28,7 +28,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         void onClick(int position);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private TextView desc;
         private ImageView img;

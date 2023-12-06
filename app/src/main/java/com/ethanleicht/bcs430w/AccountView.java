@@ -144,6 +144,12 @@ public class AccountView extends AppCompatActivity {
             addFriend.putExtra("userid", user);
             startActivity(addFriend);
             return true;
+        }else if(item.getItemId() == R.id.event_menu_item) {
+            Intent eventIntent = new Intent(getApplicationContext(), Events.class);
+            int user = getIntent().getIntExtra("userid", 0);
+            eventIntent.putExtra("userid", user);
+            startActivity(eventIntent);
+            return true;
         }else{
             return super.onOptionsItemSelected(item);
         }
