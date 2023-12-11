@@ -1,12 +1,8 @@
 package com.ethanleicht.bcs430w;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Activity;
@@ -17,24 +13,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+
+import com.crypt.JBCrypt.BCrypt;
 
 public class MainActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -124,28 +114,18 @@ public class MainActivity extends AppCompatActivity {
             // Check login information
             if(!username.getText().toString().equals("") && !password.getText().toString().equals("")) {
                 try{
-                    // Validate username and password   TODO: Decrypt passwords with PHP code
+                    // Validate username and password
+                    SQLConnect conpw = new SQLConnect();
+                    ResultSet respw = conpw.getResultsFromSQL("SELECT * FROM users WHERE username = '" +
+                            username.getText().toString() + "'");
                     String checkUsername = "username = '" + username.getText().toString() + "'";
-                    String checkPassword = "userid = '" + password.getText().toString() +
-                            "' OR password = '" + password.getText().toString() + "'";
-                    // Get Password from PHP
-                    /*try {
-                        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                        StrictMode.setThreadPolicy(policy);
-                        String checkUser = "http://108.14.0.126/BCS430w/GetUserID.php" +
-                                "?username=" + username.getText().toString() +
-                                "&password="+password.getText().toString();
-                        URL url = new URL(checkUser);
-                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                        BufferedReader in = new BufferedReader(new InputStreamReader(
-                                con.getInputStream()));
-                        checkPassword = "userid = " + in.readLine();
-                        in.close();
-                        con.disconnect();
-                    }catch (Exception e){
-                        Log.e("PHP", e.toString());
-                        //checkPassword = "false";
-                    }*/
+                    String checkPassword = " AND userid = " + password.getText().toString();
+                    if(respw.first()) {
+                        String hashedpw = respw.getString("password");
+                        checkPassword = hashedpw;
+                        checkPassword = BCrypt.checkpw(password.getText().toString(), respw.getString("password")) ? "true" : "false";
+                    }
+                    conpw.closeConnection();
 
                     String query = "SELECT * FROM users WHERE "+checkUsername+" AND "+checkPassword;
                     SQLConnect con = new SQLConnect();

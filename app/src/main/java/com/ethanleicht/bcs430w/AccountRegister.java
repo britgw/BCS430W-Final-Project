@@ -2,7 +2,6 @@ package com.ethanleicht.bcs430w;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -10,7 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
+
+import com.crypt.JBCrypt.BCrypt;
 
 public class AccountRegister extends AppCompatActivity {
     @Override
@@ -41,7 +41,7 @@ public class AccountRegister extends AppCompatActivity {
                         firstName.getText().toString() + "', '" +
                         lastName.getText().toString() + "', '" +
                         email.getText().toString() + "', '" +
-                        password.getText().toString() + "')";
+                        BCrypt.hashpw(password.getText().toString(), BCrypt.gensalt()) + "')";
                 SQLConnect con = new SQLConnect();
                 ResultSet result = con.getResultsFromSQL(query);
                 try {
