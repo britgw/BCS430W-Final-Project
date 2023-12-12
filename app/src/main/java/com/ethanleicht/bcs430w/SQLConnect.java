@@ -23,49 +23,7 @@ import java.util.ListIterator;
 public class SQLConnect {
     private Connection con;
     private ResultSet result;
-    private static String ip = "";
-
-
-    public static ArrayList<Movie> getWatchlist(int userid){
-        ArrayList<Movie> list = new ArrayList<Movie>();
-        try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            String checkUser = "http://"+ip+"/BCS430w/GetWatchlist.php" +
-                    "?user=" + userid;
-            URL url = new URL(checkUser);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            while(in.ready()){
-                Movie m = Movie.getMovieById(in.readLine());
-                list.add(m);
-            }
-            in.close();
-            con.disconnect();
-        }catch (Exception e){
-            Log.e("MOVIEDB", e.toString());
-        }
-        return list;
-    }
-    public static int GetUserId(String username, String password){
-        try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            String checkUser = "http://"+ip+"/BCS430w/GetUserID.php" +
-                    "?username=" + username +
-                    "&password=" + password;
-            URL url = new URL(checkUser);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            int userid = Integer.parseInt(in.readLine());
-            in.close();
-            con.disconnect();
-            return userid;
-        }catch (Exception e){
-            Log.e("MOVIEDB", e.toString());
-        }
-        return 0;
-    }
+    private static String ip = "108.14.0.126";
 
     // Connects to the SQL Server
     public Connection getCon() {
@@ -111,9 +69,6 @@ public class SQLConnect {
             Log.e("SQL", e.getMessage());
         }
         return null;
-    }
-    public ResultSet getResult(){
-        return result;
     }
     public SQLConnect(String query){
         getResultsFromSQL(query);
